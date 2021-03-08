@@ -43,6 +43,16 @@ services:
     networks:
       - internal
 
+  postgres:
+    image: "postgres"
+    ports:
+      - 5432:5432
+    env_file: docker-compose.env
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data/ 
+    networks:
+      - internal
+
   traefik:
     image: traefik:v2.1
     command:

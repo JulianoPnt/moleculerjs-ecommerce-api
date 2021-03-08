@@ -30,12 +30,13 @@ module.exports = {
 		 * @returns
 		 */
 		hello: {
+			cache: false, // Easier test - disable
 			rest: {
 				method: "GET",
 				path: "/hello"
 			},
 			async handler() {
-				return "Hello Moleculer";
+				return await this.models.user.findAll();
 			}
 		},
 
