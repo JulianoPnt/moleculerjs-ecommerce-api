@@ -32,9 +32,9 @@ module.exports = (sequelize, DataTypes) => {
 
 	});
 
-	// User.associate = function (models) {
-	// 	User.hasMany(models.worker, {foreignKey: "username", sourceKey: "username"});
-	// };
+	User.associate = function (models) {
+		User.hasMany(models.order, {foreignKey: "user_uuid", sourceKey: "uuid", as: 'user_orders'});
+	};
 
 	return User;
 };

@@ -36,7 +36,11 @@ module.exports = {
 				path: "/hello"
 			},
 			async handler() {
-				return await this.models.user.findAll();
+				return await this.models.user.findAll({
+					include: {
+						model: this.models.order, as: 'user_orders'
+					}	
+				});
 			}
 		},
 
