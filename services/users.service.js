@@ -1,21 +1,24 @@
 "use strict";
 
 /**
- * @typedef {import('moleculer').Context} Context Moleculer's Context
+ * user service
  */
-
 module.exports = {
-	name: "greeter",
+
+	name: "users",
 
 	/**
-	 * Settings
+	 * Service settings
 	 */
-	settings: {
-
-	},
+	settings: {},
 
 	/**
-	 * Dependencies
+	 * Service metadata
+	 */
+	metadata: {},
+
+	/**
+	 * Service dependencies
 	 */
 	dependencies: [],
 
@@ -23,17 +26,11 @@ module.exports = {
 	 * Actions
 	 */
 	actions: {
-
-		/**
-		 * Say a 'Hello' action.
-		 *
-		 * @returns
-		 */
-		hello: {
-			cache: false, // Easier test - disable
+		list: {
+			cache: true,
 			rest: {
 				method: "GET",
-				path: "/hello"
+				path: "/list"
 			},
 			async handler() {
 				return await this.models.user.findAll({
@@ -44,19 +41,20 @@ module.exports = {
 			}
 		},
 
-		/**
-		 * Welcome, a username
-		 *
-		 * @param {String} name - User name
-		 */
-		welcome: {
-			rest: "/welcome",
-			params: {
-				name: "string"
+		create: {
+			cache: false,
+			rest: {
+				method: "POST",
+				path: "/create"
 			},
-			/** @param {Context} ctx  */
 			async handler(ctx) {
-				return `Welcome, ${ctx.params.name}`;
+				return await this.models.user.create({ 
+					email: ctx.params.email,
+					username: ctx.params.username,
+					password: ctx.params.password,
+					role: "user",
+					status: "active",
+				});
 			}
 		}
 	},
@@ -65,7 +63,9 @@ module.exports = {
 	 * Events
 	 */
 	events: {
-
+		async "some.thing"(ctx) {
+			this.logger.info("Something happened", ctx.params);
+		}
 	},
 
 	/**

@@ -20,16 +20,17 @@ services:
     networks:
       - internal
 
-  greeter:
+  users:
     build:
       context: .
     image: moleculerjs-ecommerce
     env_file: docker-compose.env
     environment:
-      SERVICES: greeter
+      SERVICES: users
     depends_on:
       - nats
       - redis
+      - postgres
     networks:
       - internal
 

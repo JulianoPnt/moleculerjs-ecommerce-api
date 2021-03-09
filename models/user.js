@@ -1,35 +1,54 @@
 "use strict";
 
+const bcrypt = require("bcrypt");
+
 module.exports = (sequelize, DataTypes) => {
 
 	const User = sequelize.define("user", {
         uuid: {
 			type: DataTypes.UUID,
+			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true
 		},
 		email: {
 			type: DataTypes.STRING,
-			unique: true
+			unique: true,
+			allowNull: false,
 		},
         username: {
 			type: DataTypes.STRING,
-			unique: true
+			unique: true,
+			allowNull: false,
 		},
-		password: DataTypes.STRING,
+		password: { 
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
 		role: {
 			type: DataTypes.ENUM,
-			values: ["user", "admin"]
+			values: ["user", "admin"],
+			allowNull: false,
 		},
-		settings: DataTypes.JSONB,
-		status: DataTypes.INTEGER,
-		activation_code: DataTypes.STRING,
-		passwordRecoveryToken: DataTypes.STRING,
-		secret2fa: DataTypes.STRING,
-		referer: DataTypes.UUID,
-		registration_date: DataTypes.DATE,
-		last_login_date:  DataTypes.DATE
+		status: {
+			type: DataTypes.ENUM,
+			values: ["active", "disabled"],
+			allowNull: false,
+		},
 	}, {
-
+		hooks: {
+			beforeCreate: (user) => {
+				const salt = bcrypt.genSaltSync(8);
+				user.password = bcrypt.hashSync(user.password, salt);
+			}
+		},
+		instanceMethods: {
+            async hashSync(password, salt) {
+                return await bcrypt.hash(password, salt);
+            },
+            async validPassword(password) {
+                return await bcrypt.compare(password, this.password);
+            }
+        },
 	});
 
 	User.associate = function (models) {
