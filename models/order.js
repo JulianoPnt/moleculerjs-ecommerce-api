@@ -5,8 +5,8 @@ module.exports = (sequelize, DataTypes) => {
 	const Order = sequelize.define("order", {
         uuid: {
 			type: DataTypes.UUID,
-			primaryKey: true,
-			default: sequelize.UUIDV4,
+			defaultValue: DataTypes.UUIDV4,
+			primaryKey: true
 		},
         user_uuid: {
 			type: DataTypes.UUID,
