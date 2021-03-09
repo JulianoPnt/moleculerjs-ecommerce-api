@@ -3,22 +3,19 @@
 # moleculerjs-ecommerce
 This is a [Moleculer](https://moleculer.services/)-based microservices project. Generated with the [Moleculer CLI](https://moleculer.services/docs/0.14/moleculer-cli.html).
 
+
+## Requirements
+    - Docker
+    - Docker compose
+
 ## Usage
-Start the project with `npm run dev` command. 
+Start the project with `npm run dc:up` command. 
 After starting, open the http://localhost:3000/ URL in your browser. 
 On the welcome page you can test the generated services via API Gateway and check the nodes & services.
 
-In the terminal, try the following commands:
-- `nodes` - List all connected nodes.
-- `actions` - List all registered service actions.
-- `call greeter.hello` - Call the `greeter.hello` action.
-- `call greeter.welcome --name John` - Call the `greeter.welcome` action with the `name` parameter.
-
-
-
 ## Services
 - **api**: API Gateway services
-- **greeter**: Sample service with `hello` and `welcome` actions.
+- **users**: Users Service, REST based
 
 
 ## Useful links
