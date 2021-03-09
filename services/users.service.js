@@ -48,13 +48,15 @@ module.exports = {
 				path: "/create"
 			},
 			async handler(ctx) {
-				return await this.models.user.create({ 
+				const user =  await this.models.user.create({ 
 					email: ctx.params.email,
 					username: ctx.params.username,
 					password: ctx.params.password,
 					role: "user",
 					status: "active",
 				});
+				await this.broker.cacher.clean("users.**");
+				return user;
 			}
 		}
 	},
