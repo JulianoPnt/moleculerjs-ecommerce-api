@@ -15,11 +15,6 @@ module.exports = (sequelize, DataTypes) => {
 			unique: true,
 			allowNull: false,
 		},
-        username: {
-			type: DataTypes.STRING,
-			unique: true,
-			allowNull: false,
-		},
 		password: { 
 			type: DataTypes.STRING,
 			allowNull: false,
@@ -41,14 +36,6 @@ module.exports = (sequelize, DataTypes) => {
 				user.password = bcrypt.hashSync(user.password, salt);
 			}
 		},
-		instanceMethods: {
-            async hashSync(password, salt) {
-                return await bcrypt.hash(password, salt);
-            },
-            async validPassword(password) {
-                return await bcrypt.compare(password, this.password);
-            }
-        },
 	});
 
 	User.associate = function (models) {

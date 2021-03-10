@@ -1,11 +1,24 @@
 "use strict";
 
+const Authorize = require("../mixins/authorize.mixin");
+
 /**
  * user service
  */
 module.exports = {
 
 	name: "users",
+
+	mixins: [Authorize],
+	
+    hooks: {
+        before: {
+            "*": ["checkIsAuthenticated"],
+            list: ["checkUserRole"],
+            // update: ["checkUserRole", "checkOwner"],
+            // remove: ["checkUserRole", "checkOwner"]
+        }
+    },
 
 	/**
 	 * Service settings
@@ -27,53 +40,43 @@ module.exports = {
 	 */
 	actions: {
 		list: {
-			cache: true,
+			cache: false,
 			rest: {
 				method: "GET",
 				path: "/list"
 			},
-			async handler() {
+			role: 'user',
+			async handler(ctx) {
 				return await this.models.user.findAll({
 					include: {
-						model: this.models.order, as: 'user_orders'
-					}	
+						model: this.models.order, as: 'user_orders',
+					},
+					attributes: {
+						exclude: ['password']
+					}
 				});
 			}
 		},
-
-		create: {
-			cache: false,
-			rest: {
-				method: "POST",
-				path: "/create"
-			},
-			async handler(ctx) {
-				const user =  await this.models.user.create({ 
-					email: ctx.params.email,
-					username: ctx.params.username,
-					password: ctx.params.password,
-					role: "user",
-					status: "active",
-				});
-				await this.broker.cacher.clean("users.**");
-				return user;
-			}
-		}
-	},
-
-	/**
-	 * Events
-	 */
-	events: {
-		async "some.thing"(ctx) {
-			this.logger.info("Something happened", ctx.params);
-		}
 	},
 
 	/**
 	 * Methods
 	 */
 	methods: {
+		checkIsAuthenticated(ctx) {
+            if (!ctx.meta.user)
+                throw new Error("Unauthenticated");
+        },
+		checkUserRole(ctx) {
+            if (ctx.action.role && ctx.meta.user.role != ctx.action.role)
+                throw new Error("Forbidden");
+        },
+	},
+
+	/**
+	 * Events
+	 */
+	events: {
 
 	},
 
