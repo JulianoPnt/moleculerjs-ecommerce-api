@@ -63,14 +63,7 @@ module.exports = {
 	 * Methods
 	 */
 	methods: {
-		checkIsAuthenticated(ctx) {
-            if (!ctx.meta.user)
-                throw new Error("Unauthenticated");
-        },
-		checkUserRole(ctx) {
-            if (ctx.action.role && ctx.meta.user.role != ctx.action.role)
-                throw new Error("Forbidden");
-        },
+
 	},
 
 	/**
