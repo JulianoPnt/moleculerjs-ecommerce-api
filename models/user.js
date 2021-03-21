@@ -10,6 +10,14 @@ module.exports = (sequelize, DataTypes) => {
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true
 		},
+		first_name: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
+		last_name: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
 		email: {
 			type: DataTypes.STRING,
 			unique: true,
@@ -22,12 +30,15 @@ module.exports = (sequelize, DataTypes) => {
 		role: {
 			type: DataTypes.ENUM,
 			values: ["user", "admin"],
-			allowNull: false,
+			defaultValue: "user",
 		},
-		status: {
-			type: DataTypes.ENUM,
-			values: ["active", "disabled"],
-			allowNull: false,
+		birth: {
+			type: DataTypes.DATEONLY,
+			allowNull: true,
+		},
+		active: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: false,
 		},
 	}, {
 		hooks: {

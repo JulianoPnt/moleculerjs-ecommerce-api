@@ -37,15 +37,20 @@ module.exports = {
 				path: "/register"
 			},
 			params: {
+				first_name: { type: "string" },
+				last_name: { type: "string"},
 				email: { type: "email" },
+				birth: { type: "date", optional: true },
 				password: { type: "string", min: 8 }
 			},
 			async handler(ctx) {
 				const user =  await this.models.user.create({ 
+					first_name: ctx.params.first_name,
+					last_name: ctx.params.last_name,
 					email: ctx.params.email,
 					password: ctx.params.password,
-					role: "user",
-					status: "active",
+					birth: ctx.params.birth,
+					active: true, // Remove when validate mail is ready
 				});
 				await this.broker.cacher.clean("users.**");
 				return {
@@ -70,7 +75,7 @@ module.exports = {
 					.findOne({ 
 						where: { 
 							email: ctx.params.email,
-							status: 'active'
+							active: true,
 						} 
 					})
 					.then(async (user) => {
@@ -92,7 +97,7 @@ module.exports = {
 					})
 					.catch(err => {
 						return { 
-							"message": "Failed to authenticate. Please check your e-mail and password!",
+							"message": "Failed to authenticate. Please check your e-mail and password or confirm your email!",
 						};
 					});
 			}
@@ -105,11 +110,12 @@ module.exports = {
 				path: "/resolveToken"
 			},
 			params: {
-				token: { type: "string" }
+				token: { type: "string" },
+				key: { type: "string" },
 			},
 			async handler(ctx) {
 				try {
-					return jwt.verify(ctx.params.token , process.env.JWT_SECRET);
+					return jwt.verify(ctx.params.token, ctx.params.key);
 				} catch(err) {
 					throw new Errors.UnAuthorizedError
 				}

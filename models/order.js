@@ -10,10 +10,12 @@ module.exports = (sequelize, DataTypes) => {
 		},
         user_uuid: {
 			type: DataTypes.UUID,
+            allowNull: false,
         },
 		status: {
 			type: DataTypes.ENUM,
-			values: ["pending", "processed"]
+			values: ["pending", "processed", "denied"],
+            allowNull: false,
 		},
 	}, {
 

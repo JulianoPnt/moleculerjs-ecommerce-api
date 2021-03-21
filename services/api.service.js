@@ -30,6 +30,7 @@ module.exports = {
 					"auth.register",
 					"auth.login",
 					"users.*",
+					"products.*",
 				],
 				http2: true,
 				// HTTPS server with certificate ## MUST BE CONFIGURED IN PRODUCTION
@@ -114,7 +115,7 @@ module.exports = {
 			if (auth && auth.startsWith("Bearer")) {
 				const token = auth.slice(7);
 
-				const res = await ctx.broker.call('auth.resolveToken', {'token': token});
+				const res = await ctx.broker.call('auth.resolveToken', {'token': token, 'key': process.env.JWT_SECRET});
 				if (res) {
 					// Returns the resolved user. It will be set to the `ctx.meta.user`
 					return res;

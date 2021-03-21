@@ -9,7 +9,8 @@ module.exports = function SequelizeDbMiddleware(options = {}) {
 	options = {
 		dialect: "postgres",
 		define: {
-			timestamps: true
+			timestamps: true,
+			underscored: true,
 		},
 		logging: process.env.LOGLEVEL === "debug",
 		pool: {

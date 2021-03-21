@@ -3,23 +3,18 @@
 const Authorize = require("../mixins/authorize.mixin");
 
 /**
- * user service
+ * products service
  */
 module.exports = {
 
-	name: "users",
-
+	name: "products",
+	
 	mixins: [Authorize],
 	
-    hooks: {
-        before: {
-            "*": ["checkIsAuthenticated"],
-            list: ["checkUserRole"],
-            // update: ["checkUserRole", "checkOwner"],
-            // remove: ["checkUserRole", "checkOwner"]
-        }
-    },
-
+    // hooks: {
+    //     before: {
+    //     },
+    // },
 	/**
 	 * Service settings
 	 */
@@ -40,19 +35,19 @@ module.exports = {
 	 */
 	actions: {
 		list: {
-			cache: false, // Must be present only in dev
+			cache: false,
 			rest: {
 				method: "GET",
 				path: "/list"
 			},
-			role: 'admin',
 			async handler(ctx) {
-				return await this.models.user.findAll({
-					include: {
-						model: this.models.order, as: 'user_orders',
-					},
+				return await this.models.products.findAll({
+					include: [
+						{ model: this.models.product_details, as: "product_details" },
+						{ model: this.models.product_categories, as: "product_category" },
+					],
 					attributes: {
-						exclude: ['password']
+						exclude: []
 					}
 				});
 			}
@@ -60,16 +55,16 @@ module.exports = {
 	},
 
 	/**
-	 * Methods
+	 * Events
 	 */
-	methods: {
+	events: {
 
 	},
 
 	/**
-	 * Events
+	 * Methods
 	 */
-	events: {
+	methods: {
 
 	},
 
