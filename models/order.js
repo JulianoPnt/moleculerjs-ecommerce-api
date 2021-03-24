@@ -21,5 +21,9 @@ module.exports = (sequelize, DataTypes) => {
 
 	});
 
+    Order.associate = function (models) {
+		Order.hasOne(models.reviews, {foreignKey: "order_uuid", sourceKey: "uuid", as: 'order_review'});
+	};
+
 	return Order;
 };

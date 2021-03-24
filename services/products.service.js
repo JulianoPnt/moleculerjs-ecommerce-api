@@ -45,6 +45,7 @@ module.exports = {
 					include: [
 						{ model: this.models.product_details, as: "product_details" },
 						{ model: this.models.product_categories, as: "product_category" },
+						{ model: this.models.reviews, as: "product_reviews" },
 					],
 					attributes: {
 						exclude: []
