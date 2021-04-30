@@ -29,6 +29,7 @@ module.exports = {
 				whitelist: [
 					"auth.register",
 					"auth.login",
+					"auth.checkToken",
 					"users.*",
 					"products.*",
 				],

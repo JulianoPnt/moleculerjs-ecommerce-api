@@ -93,13 +93,33 @@ module.exports = {
 							};
 						}
 						
-						throw new Errors.UnAuthorizedError;
+						throw new Errors.ForbiddenError;
 					})
 					.catch(err => {
-						return { 
-							"message": "Failed to authenticate. Please check your e-mail and password or confirm your email!",
-						};
+						throw new Errors.ForbiddenError;
 					});
+			}
+		},
+
+		checkToken: {
+			cache: false,
+			rest: {
+				method: "POST",
+				path: "/checkToken"
+			},
+			params: {
+				token: { type: "string" },
+			},
+			async handler(ctx) {
+				try {
+					if (jwt.verify(ctx.params.token, process.env.JWT_SECRET)) {
+						return ctx.params.token;
+					}
+
+					throw new Errors.ForbiddenError
+				} catch(err) {
+					throw new Errors.ForbiddenError
+				}
 			}
 		},
 
