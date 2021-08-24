@@ -8,13 +8,13 @@ const Authorize = require("../mixins/authorize.mixin");
 module.exports = {
 
 	name: "products",
-	
+
 	mixins: [Authorize],
-	
-    // hooks: {
-    //     before: {
-    //     },
-    // },
+
+	// hooks: {
+	//     before: {
+	//     },
+	// },
 	/**
 	 * Service settings
 	 */

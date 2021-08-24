@@ -60,7 +60,7 @@ module.exports = {
 				onBeforeCall(ctx, route, req, res) {
 					// Set request headers to context meta
 					ctx.meta.userAgent = req.headers["user-agent"];
-				}, 
+				},
 
 				bodyParsers: {
 					json: {
@@ -116,7 +116,7 @@ module.exports = {
 			if (auth && auth.startsWith("Bearer")) {
 				const token = auth.slice(7);
 
-				const res = await ctx.broker.call('auth.resolveToken', {'token': token, 'key': process.env.JWT_SECRET});
+				const res = await ctx.broker.call("auth.resolveToken", {"token": token, "key": process.env.JWT_SECRET});
 				if (res) {
 					// Returns the resolved user. It will be set to the `ctx.meta.user`
 					return res;

@@ -1,7 +1,7 @@
 "use strict";
 
 const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const { Errors } = require("moleculer-web");
 
 /**
@@ -72,11 +72,11 @@ module.exports = {
 			},
 			async handler(ctx) {
 				return await this.models.user
-					.findOne({ 
-						where: { 
+					.findOne({
+						where: {
 							email: ctx.params.email,
 							active: true,
-						} 
+						}
 					})
 					.then(async (user) => {
 						if (await bcrypt.compare(ctx.params.password, user.password)) {
@@ -92,7 +92,7 @@ module.exports = {
 								"bearer_token": generatedToken,
 							};
 						}
-						
+
 						throw new Errors.ForbiddenError;
 					})
 					.catch(err => {
@@ -116,9 +116,9 @@ module.exports = {
 						return ctx.params.token;
 					}
 
-					throw new Errors.ForbiddenError
+					throw new Errors.ForbiddenError;
 				} catch(err) {
-					throw new Errors.ForbiddenError
+					throw new Errors.ForbiddenError;
 				}
 			}
 		},
@@ -137,7 +137,7 @@ module.exports = {
 				try {
 					return jwt.verify(ctx.params.token, ctx.params.key);
 				} catch(err) {
-					throw new Errors.UnAuthorizedError
+					throw new Errors.UnAuthorizedError;
 				}
 			}
 		},
