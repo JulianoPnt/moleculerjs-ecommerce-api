@@ -53,6 +53,9 @@ module.exports = {
 					active: true, // Remove when validate mail is ready
 				});
 				await this.broker.cacher.clean("users.**");
+
+				user.password = undefined;
+
 				return {
 					"message": "Sucessfully registered",
 					user
