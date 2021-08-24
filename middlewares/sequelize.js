@@ -21,7 +21,7 @@ module.exports = function SequelizeDbMiddleware(options = {}) {
 		},
 		...options
 	};
-	const databaseString = `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DB}`
+	const databaseString = `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST}:${process.env.POSTGRES_PORT}/${process.env.POSTGRES_DB}`;
 	const connection = new Sequelize(databaseString, options);
 	const models = {};
 
@@ -32,9 +32,9 @@ module.exports = function SequelizeDbMiddleware(options = {}) {
 			connection.sync().then(() => {
 				this.logger.info("Sequelize middleware ready");
 			})
-			.catch(err => {
-				this.logger.error('Unable to connect to the database:', err);
-			});
+				.catch(err => {
+					this.logger.error("Unable to connect to the database:", err);
+				});
 
 			const dir = __dirname + "/../models";
 			fs

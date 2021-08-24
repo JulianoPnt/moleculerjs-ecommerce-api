@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 module.exports = (sequelize, DataTypes) => {
 
 	const User = sequelize.define("user", {
-        uuid: {
+		uuid: {
 			type: DataTypes.UUID,
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
 			unique: true,
 			allowNull: false,
 		},
-		password: { 
+		password: {
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
 	});
 
 	User.associate = function (models) {
-		User.hasMany(models.order, {foreignKey: "user_uuid", sourceKey: "uuid", as: 'user_orders'});
+		User.hasMany(models.order, {foreignKey: "user_uuid", sourceKey: "uuid", as: "user_orders"});
 	};
 
 	return User;

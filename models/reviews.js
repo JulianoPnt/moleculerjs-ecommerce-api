@@ -3,27 +3,27 @@
 module.exports = (sequelize, DataTypes) => {
 
 	const Review = sequelize.define("reviews", {
-        uuid: {
+		uuid: {
 			type: DataTypes.UUID,
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true
 		},
-        product_uuid: {
+		product_uuid: {
 			type: DataTypes.UUID,
-            allowNull: false,
-        },
-        order_uuid: {
+			allowNull: false,
+		},
+		order_uuid: {
 			type: DataTypes.UUID,
-            allowNull: false,
-        },
-        comment: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-        },
-        rating: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
+			allowNull: false,
+		},
+		comment: {
+			type: DataTypes.TEXT,
+			allowNull: true,
+		},
+		rating: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+		},
 	}, {
 
 	});

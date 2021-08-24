@@ -3,26 +3,26 @@
 module.exports = (sequelize, DataTypes) => {
 
 	const Order = sequelize.define("order", {
-        uuid: {
+		uuid: {
 			type: DataTypes.UUID,
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true
 		},
-        user_uuid: {
+		user_uuid: {
 			type: DataTypes.UUID,
-            allowNull: false,
-        },
+			allowNull: false,
+		},
 		status: {
 			type: DataTypes.ENUM,
 			values: ["pending", "processed", "denied"],
-            allowNull: false,
+			allowNull: false,
 		},
 	}, {
 
 	});
 
-    Order.associate = function (models) {
-		Order.hasOne(models.reviews, {foreignKey: "order_uuid", sourceKey: "uuid", as: 'order_review'});
+	Order.associate = function (models) {
+		Order.hasOne(models.reviews, {foreignKey: "order_uuid", sourceKey: "uuid", as: "order_review"});
 	};
 
 	return Order;

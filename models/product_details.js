@@ -3,27 +3,27 @@
 module.exports = (sequelize, DataTypes) => {
 
 	const ProductDetail = sequelize.define("product_details", {
-        uuid: {
+		uuid: {
 			type: DataTypes.UUID,
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true
 		},
-        product_uuid: {
+		product_uuid: {
 			type: DataTypes.UUID,
-            allowNull: false,
-        },
-        size: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        color: {
-            type: DataTypes.STRING,
-            allowNull: true, 
-        },
-        image_url: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        }
+			allowNull: false,
+		},
+		size: {
+			type: DataTypes.STRING,
+			allowNull: true,
+		},
+		color: {
+			type: DataTypes.STRING,
+			allowNull: true,
+		},
+		image_url: {
+			type: DataTypes.STRING,
+			allowNull: true,
+		}
 	}, {
 
 	});
