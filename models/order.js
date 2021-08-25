@@ -33,6 +33,9 @@ module.exports = (sequelize, DataTypes) => {
 			sourceKey: "address_uuid",
 			as: "order_address",
 		});
+		Order.belongsToMany(models.product_details, {
+			through: models.order_products,
+		});
 	};
 
 	return Order;
