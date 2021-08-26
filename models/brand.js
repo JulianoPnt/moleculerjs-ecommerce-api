@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
 			image_url: {
 				// sent by front-end
 				type: DataTypes.STRING,
-				allowNull: false,
+				allowNull: true,
 			},
 		},
 		{}

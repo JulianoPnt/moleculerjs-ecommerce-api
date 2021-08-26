@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
 			},
 			active: {
 				type: DataTypes.BOOLEAN,
-				defaultValue: false,
+				defaultValue: true,
 			},
 		},
 		{}
@@ -42,27 +42,22 @@ module.exports = (sequelize, DataTypes) => {
 		Product.hasMany(models.product_details, {
 			foreignKey: "product_uuid",
 			sourceKey: "uuid",
-			as: "product_details",
 		});
 		Product.hasMany(models.tag, {
 			foreignKey: "product_uuid",
 			sourceKey: "uuid",
-			as: "product_tags",
 		});
 		Product.hasOne(models.brand, {
 			foreignKey: "product_uuid",
 			sourceKey: "uuid",
-			as: "product_brand",
 		});
 		Product.hasMany(models.reviews, {
 			foreignKey: "product_uuid",
 			sourceKey: "uuid",
-			as: "product_reviews",
 		});
 		Product.belongsTo(models.product_categories, {
 			foreignKey: "category_uuid",
 			sourceKey: "uuid",
-			as: "product_category",
 		});
 	};
 

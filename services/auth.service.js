@@ -8,7 +8,6 @@ const { Errors } = require("moleculer-web");
  * auth service
  */
 module.exports = {
-
 	name: "auth",
 
 	/**
@@ -34,17 +33,17 @@ module.exports = {
 			cache: false,
 			rest: {
 				method: "POST",
-				path: "/register"
+				path: "/register",
 			},
 			params: {
 				first_name: { type: "string" },
-				last_name: { type: "string"},
+				last_name: { type: "string" },
 				email: { type: "email" },
 				birth: { type: "date", optional: true },
-				password: { type: "string", min: 8 }
+				password: { type: "string", min: 8 },
 			},
 			async handler(ctx) {
-				const user =  await this.models.user.create({ 
+				const user = await this.models.user.create({
 					first_name: ctx.params.first_name,
 					last_name: ctx.params.last_name,
 					email: ctx.params.email,
@@ -57,21 +56,21 @@ module.exports = {
 				user.password = undefined;
 
 				return {
-					"message": "Sucessfully registered",
-					user
+					message: "Sucessfully registered",
+					user,
 				};
-			}
+			},
 		},
 
 		login: {
 			cache: false,
 			rest: {
 				method: "POST",
-				path: "/login"
+				path: "/login",
 			},
 			params: {
 				email: { type: "email" },
-				password: { type: "string" }
+				password: { type: "string" },
 			},
 			async handler(ctx) {
 				return await this.models.user
@@ -79,36 +78,45 @@ module.exports = {
 						where: {
 							email: ctx.params.email,
 							active: true,
-						}
+						},
 					})
 					.then(async (user) => {
-						if (await bcrypt.compare(ctx.params.password, user.password)) {
-							let generatedToken = jwt.sign({...user.dataValues}, process.env.JWT_SECRET, {
-								expiresIn: "7 days"
-							});
+						if (
+							await bcrypt.compare(
+								ctx.params.password,
+								user.password
+							)
+						) {
+							let generatedToken = jwt.sign(
+								{ ...user.dataValues },
+								process.env.JWT_SECRET,
+								{
+									expiresIn: "7 days",
+								}
+							);
 
 							user.password = undefined;
 
 							return {
-								"message": "Successfully authenticated!",
+								message: "Successfully authenticated!",
 								user,
-								"bearer_token": generatedToken,
+								bearer_token: generatedToken,
 							};
 						}
 
-						throw new Errors.ForbiddenError;
+						throw new Errors.ForbiddenError();
 					})
-					.catch(err => {
-						throw new Errors.ForbiddenError;
+					.catch((err) => {
+						throw new Errors.ForbiddenError();
 					});
-			}
+			},
 		},
 
 		checkToken: {
 			cache: false,
 			rest: {
 				method: "POST",
-				path: "/checkToken"
+				path: "/checkToken",
 			},
 			params: {
 				token: { type: "string" },
@@ -119,18 +127,18 @@ module.exports = {
 						return ctx.params.token;
 					}
 
-					throw new Errors.ForbiddenError;
-				} catch(err) {
-					throw new Errors.ForbiddenError;
+					throw new Errors.ForbiddenError();
+				} catch (err) {
+					throw new Errors.ForbiddenError();
 				}
-			}
+			},
 		},
 
 		resolveToken: {
 			cache: false,
 			rest: {
 				method: "POST",
-				path: "/resolveToken"
+				path: "/resolveToken",
 			},
 			params: {
 				token: { type: "string" },
@@ -139,46 +147,35 @@ module.exports = {
 			async handler(ctx) {
 				try {
 					return jwt.verify(ctx.params.token, ctx.params.key);
-				} catch(err) {
-					throw new Errors.UnAuthorizedError;
+				} catch (err) {
+					throw new Errors.UnAuthorizedError();
 				}
-			}
+			},
 		},
-
 	},
 
 	/**
 	 * Events
 	 */
-	events: {
-
-	},
+	events: {},
 
 	/**
 	 * Methods
 	 */
-	methods: {
-
-	},
+	methods: {},
 
 	/**
 	 * Service created lifecycle event handler
 	 */
-	created() {
-
-	},
+	created() {},
 
 	/**
 	 * Service started lifecycle event handler
 	 */
-	async started() {
-
-	},
+	async started() {},
 
 	/**
 	 * Service stopped lifecycle event handler
 	 */
-	async stopped() {
-
-	}
+	async stopped() {},
 };
