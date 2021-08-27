@@ -138,7 +138,29 @@ module.exports = {
 				await this.broker.cacher.clean("products.**");
 
 				return {
-					message: "Sucessfully edited",
+					message: "Successfully edited",
+					product,
+				};
+			},
+		},
+		delete: {
+			cache: false,
+			rest: {
+				method: "DELETE",
+				path: "/delete",
+			},
+			params: {
+				uuid: { type: "string" },
+				$$strict: true, // Prevent additional data than defined params
+			},
+			async handler(ctx) {
+				const product = await this.models.products.destroy({
+					where: { uuid: ctx.params.uuid },
+				});
+				await this.broker.cacher.clean("products.**");
+
+				return {
+					message: "Removed successfully",
 					product,
 				};
 			},
