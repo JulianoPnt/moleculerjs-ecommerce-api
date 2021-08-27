@@ -111,6 +111,38 @@ module.exports = {
 				};
 			},
 		},
+		edit: {
+			cache: false,
+			rest: {
+				method: "PUT",
+				path: "/edit",
+			},
+			params: {
+				uuid: { type: "string" },
+				name: { type: "string", optional: true },
+				description: { type: "string", optional: true },
+				image_url: { type: "string", optional: true },
+				active: { type: "boolean", optional: true },
+				price: {
+					type: "number",
+					optional: true,
+					positive: true,
+					integer: false,
+				},
+				$$strict: true, // Prevent additional data than defined params
+			},
+			async handler(ctx) {
+				const product = await this.models.products.update(ctx.params, {
+					where: { uuid: ctx.params.uuid },
+				});
+				await this.broker.cacher.clean("products.**");
+
+				return {
+					message: "Sucessfully edited",
+					product,
+				};
+			},
+		},
 	},
 
 	/**
