@@ -9,7 +9,7 @@
     "ci": "jest --watch",
     "test": "jest --coverage",
     "lint": "eslint services",
-    "dc:up": "sudo docker-compose up --build -d",
+    "dc:up": "sudo docker-compose up --build -d --scale api=5",
     "dc:logs": "docker-compose logs -f",
     "dc:down": "docker-compose down"
   },

@@ -45,12 +45,12 @@ module.exports = {
 					allowedHeaders: "*",
 					//exposedHeaders: "*",
 					credentials: true,
-					maxAge: null
+					maxAge: null,
 				},
 				rateLimit: {
 					window: 10 * 1000,
 					limit: 10,
-					headers: true
+					headers: true,
 				},
 				mergeParams: true,
 				authentication: true,
@@ -62,15 +62,21 @@ module.exports = {
 					ctx.meta.userAgent = req.headers["user-agent"];
 				},
 
+				// Call after `broker.call` and before send back the response
+				onAfterCall(ctx, route, req, res, data) {
+					res.setHeader("x-Node-ID", ctx.broker.nodeID);
+					return data;
+				},
+
 				bodyParsers: {
 					json: {
 						strict: false,
-						limit: "1MB"
+						limit: "1MB",
 					},
 					urlencoded: {
 						extended: true,
-						limit: "1MB"
-					}
+						limit: "1MB",
+					},
 				},
 
 				// Mapping policy setting. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Mapping-policy
@@ -87,18 +93,16 @@ module.exports = {
 		// Logging the response data. Set to any log level to enable it. E.g. "info"
 		logResponseData: null,
 
-
 		// Serve assets from "public" folder. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Serve-static-files
 		assets: {
 			folder: "public",
 
 			// Options to `server-static` module
-			options: {}
-		}
+			options: {},
+		},
 	},
 
 	methods: {
-
 		/**
 		 * Authenticate the request. It check the `Authorization` token value in the request header.
 		 * Check the token value & resolve the user by the token.
@@ -116,21 +120,24 @@ module.exports = {
 			if (auth && auth.startsWith("Bearer")) {
 				const token = auth.slice(7);
 
-				const res = await ctx.broker.call("auth.resolveToken", {"token": token, "key": process.env.JWT_SECRET});
+				const res = await ctx.broker.call("auth.resolveToken", {
+					token: token,
+					key: process.env.JWT_SECRET,
+				});
 				if (res) {
 					// Returns the resolved user. It will be set to the `ctx.meta.user`
 					return res;
 				} else {
 					// Invalid token
-					throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
+					throw new ApiGateway.Errors.UnAuthorizedError(
+						ApiGateway.Errors.ERR_INVALID_TOKEN
+					);
 				}
-
 			} else {
 				// No token. Throw an error or do nothing if anonymous access is allowed.
 				// throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_NO_TOKEN)
 				return null;
 			}
 		},
-
-	}
+	},
 };
