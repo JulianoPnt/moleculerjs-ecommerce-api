@@ -1,12 +1,11 @@
 "use strict";
 
 module.exports = (sequelize, DataTypes) => {
-
 	const Address = sequelize.define("address", {
 		uuid: {
 			type: DataTypes.UUID,
 			defaultValue: DataTypes.UUIDV4,
-			primaryKey: true
+			primaryKey: true,
 		},
 		user_uuid: {
 			type: DataTypes.UUID,
@@ -27,12 +26,20 @@ module.exports = (sequelize, DataTypes) => {
 		number: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
-		}
+		},
 	});
 
 	Address.associate = function (models) {
-		Address.belongsTo(models.user, {foreignKey: "uuid", sourceKey: "user_uuid", as: "address_user"});
-		Address.belongsTo(models.order, {foreignKey: "address_uuid", sourceKey: "uuid", as: "address_order"});
+		Address.belongsTo(models.user, {
+			foreignKey: "uuid",
+			sourceKey: "user_uuid",
+			as: "address_user",
+		});
+		Address.belongsTo(models.order, {
+			foreignKey: "address_uuid",
+			sourceKey: "uuid",
+			as: "address_order",
+		});
 	};
 
 	return Address;

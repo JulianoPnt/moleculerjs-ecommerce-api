@@ -32,6 +32,7 @@ module.exports = {
 					"auth.checkToken",
 					"users.*",
 					"products.*",
+					"orders.*",
 				],
 				http2: true,
 				// HTTPS server with certificate ## MUST BE CONFIGURED IN PRODUCTION

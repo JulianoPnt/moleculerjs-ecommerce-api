@@ -13,9 +13,10 @@ module.exports = {
 	hooks: {
 		before: {
 			"*": ["checkIsAuthenticated"],
-			// list: ["checkUserRole"],
-			// update: ["checkUserRole", "checkOwner"],
-			// remove: ["checkUserRole", "checkOwner"]
+			list: ["checkUserRole"],
+			add: ["checkUserRole"],
+			update: ["checkUserRole"],
+			remove: ["checkUserRole"],
 		},
 	},
 	/**
@@ -43,6 +44,7 @@ module.exports = {
 				method: "GET",
 				path: "/list",
 			},
+			role: "user",
 			async handler() {
 				return await this.models.products.findAll({
 					include: [
@@ -68,6 +70,7 @@ module.exports = {
 				method: "POST",
 				path: "/add",
 			},
+			role: "admin",
 			params: {
 				name: { type: "string" },
 				description: { type: "string", optional: true },
@@ -117,6 +120,7 @@ module.exports = {
 				method: "PUT",
 				path: "/edit",
 			},
+			role: "admin",
 			params: {
 				uuid: { type: "string" },
 				name: { type: "string", optional: true },
@@ -149,6 +153,7 @@ module.exports = {
 				method: "DELETE",
 				path: "/delete",
 			},
+			role: "admin",
 			params: {
 				uuid: { type: "string" },
 				$$strict: true, // Prevent additional data than defined params
