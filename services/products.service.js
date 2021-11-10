@@ -82,7 +82,7 @@ module.exports = {
 					image_url: { type: "string", optional: true },
 				},
 				product_details: {
-					$$type: "object",
+					$$type: "array",
 					color: { type: "string" },
 					size: { type: "string" },
 					image_url: { type: "string", optional: true },
@@ -96,6 +96,7 @@ module.exports = {
 					$$type: "array|optional",
 					name: { type: "string" },
 				},
+				$$strict: true,
 			},
 			async handler(ctx) {
 				const product = await this.models.products.create(ctx.params, {

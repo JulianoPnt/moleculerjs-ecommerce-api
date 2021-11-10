@@ -31,8 +31,8 @@ module.exports = (sequelize, DataTypes) => {
 
 	ProductDetail.associate = function (models) {
 		ProductDetail.belongsTo(models.products, {
-			foreignKey: "uuid",
-			sourceKey: "product_uuid",
+			foreignKey: "product_uuid",
+			sourceKey: "uuid",
 			as: "detail_product",
 		});
 		ProductDetail.belongsToMany(models.order, {

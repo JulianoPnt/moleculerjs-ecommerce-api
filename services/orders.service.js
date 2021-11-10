@@ -15,8 +15,6 @@ module.exports = {
 			"*": ["checkIsAuthenticated"],
 			list: ["checkUserRole"],
 			add: ["checkUserRole"],
-			update: ["checkUserRole"],
-			remove: ["checkUserRole"],
 		},
 	},
 	/**
@@ -49,6 +47,37 @@ module.exports = {
 				return await this.models.order.findAll();
 			},
 		},
+		// add: {
+		// 	cache: false,
+		// 	rest: {
+		// 		method: "POST",
+		// 		path: "/add",
+		// 	},
+		// 	role: "user",
+		// 	params: {
+		// 		address: "uuid",
+		// 		product_details: { $$type: "array", items: "uuid" },
+		// 	},
+		// 	async handler(ctx) {
+		// 		const order = await this.models.order.create(
+		// 			{
+		// 				...ctx.params,
+		// 				address_uuid: ctx.params.address,
+		// 				user_uuid: ctx.meta.user.uuid,
+		// 				status: "pending",
+		// 			},
+		// 			{
+		// 				include: [this.models.product_details],
+		// 			}
+		// 		);
+		// 		await this.broker.cacher.clean("orders.**");
+
+		// 		return {
+		// 			message: "Sucessfully added",
+		// 			order,
+		// 		};
+		// 	},
+		// },
 	},
 
 	/**

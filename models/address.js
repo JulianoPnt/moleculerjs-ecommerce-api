@@ -31,8 +31,8 @@ module.exports = (sequelize, DataTypes) => {
 
 	Address.associate = function (models) {
 		Address.belongsTo(models.user, {
-			foreignKey: "uuid",
-			sourceKey: "user_uuid",
+			foreignKey: "user_uuid",
+			sourceKey: "uuid",
 			as: "address_user",
 		});
 		Address.belongsTo(models.order, {

@@ -6,7 +6,6 @@ const Authorize = require("../mixins/authorize.mixin");
  * user service
  */
 module.exports = {
-
 	name: "users",
 
 	mixins: [Authorize],
@@ -15,9 +14,8 @@ module.exports = {
 		before: {
 			"*": ["checkIsAuthenticated"],
 			list: ["checkUserRole"],
-			// update: ["checkUserRole", "checkOwner"],
-			// remove: ["checkUserRole", "checkOwner"]
-		}
+			addAddress: ["checkUserRole"],
+		},
 	},
 
 	/**
@@ -43,54 +41,72 @@ module.exports = {
 			cache: false, // Must be present only in dev
 			rest: {
 				method: "GET",
-				path: "/list"
+				path: "/list",
 			},
 			role: "admin",
 			async handler(ctx) {
 				return await this.models.user.findAll({
-					include: {
-						model: this.models.order, as: "user_orders",
-					},
+					include: [
+						{
+							model: this.models.order,
+							as: "user_orders",
+						},
+						{ model: this.models.address, as: "user_addresses" },
+					],
 					attributes: {
-						exclude: ["password"]
-					}
+						exclude: ["password"],
+					},
 				});
-			}
+			},
+		},
+		addAddress: {
+			cache: false, // Must be present only in dev
+			rest: {
+				method: "GET",
+				path: "/addAddress",
+			},
+			role: "user",
+			params: {
+				address: {
+					$$type: "object",
+					district: "string",
+					street: "string",
+					post_code: "string",
+					number: { type: "number", positive: true, integer: true },
+				},
+				$$strict: true,
+			},
+			async handler(ctx) {
+				return this.models.address.create({
+					...ctx.params.address,
+					user_uuid: ctx.meta.user.uuid,
+				});
+			},
 		},
 	},
 
 	/**
 	 * Methods
 	 */
-	methods: {
-
-	},
+	methods: {},
 
 	/**
 	 * Events
 	 */
-	events: {
-
-	},
+	events: {},
 
 	/**
 	 * Service created lifecycle event handler
 	 */
-	created() {
-
-	},
+	created() {},
 
 	/**
 	 * Service started lifecycle event handler
 	 */
-	async started() {
-
-	},
+	async started() {},
 
 	/**
 	 * Service stopped lifecycle event handler
 	 */
-	async stopped() {
-
-	}
+	async stopped() {},
 };

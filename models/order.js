@@ -29,8 +29,8 @@ module.exports = (sequelize, DataTypes) => {
 			as: "order_review",
 		});
 		Order.hasOne(models.address, {
-			foreignKey: "uuid",
-			sourceKey: "address_uuid",
+			foreignKey: "address_uuid",
+			sourceKey: "uuid",
 			as: "order_address",
 		});
 		Order.belongsToMany(models.product_details, {
