@@ -43,7 +43,7 @@ module.exports = {
 				path: "/list",
 			},
 			role: "user",
-			async handler() {
+			async handler(ctx) {
 				return await this.models.order.findAll({
 					include: [
 						{
@@ -56,6 +56,7 @@ module.exports = {
 							],
 						},
 					],
+					where: { user_uuid: ctx.meta.user.uuid },
 				});
 			},
 		},
@@ -86,7 +87,7 @@ module.exports = {
 					.create({
 						address_uuid: ctx.params.address,
 						user_uuid: ctx.meta.user.uuid,
-						status: "processed",
+						status: "pending",
 					})
 					.then(async (createdOrder) => {
 						const association = ctx.params.product_details.map(
