@@ -44,40 +44,63 @@ module.exports = {
 			},
 			role: "user",
 			async handler() {
-				return await this.models.order.findAll();
+				return await this.models.order.findAll({
+					include: this.models.product_details,
+				});
 			},
 		},
-		// add: {
-		// 	cache: false,
-		// 	rest: {
-		// 		method: "POST",
-		// 		path: "/add",
-		// 	},
-		// 	role: "user",
-		// 	params: {
-		// 		address: "uuid",
-		// 		product_details: { $$type: "array", items: "uuid" },
-		// 	},
-		// 	async handler(ctx) {
-		// 		const order = await this.models.order.create(
-		// 			{
-		// 				...ctx.params,
-		// 				address_uuid: ctx.params.address,
-		// 				user_uuid: ctx.meta.user.uuid,
-		// 				status: "pending",
-		// 			},
-		// 			{
-		// 				include: [this.models.product_details],
-		// 			}
-		// 		);
-		// 		await this.broker.cacher.clean("orders.**");
+		add: {
+			cache: false,
+			rest: {
+				method: "POST",
+				path: "/add",
+			},
+			role: "user",
+			params: {
+				address: "uuid",
+				product_details: {
+					$$type: "array",
+					items: {
+						type: "object",
+						product_detail_uuid: "uuid",
+						quantity: {
+							type: "number",
+							positive: true,
+							integer: true,
+						},
+					},
+				},
+			},
+			async handler(ctx) {
+				const order = await this.models.order
+					.create({
+						address_uuid: ctx.params.address,
+						user_uuid: ctx.meta.user.uuid,
+						status: "processed",
+					})
+					.then(async (createdOrder) => {
+						const association = ctx.params.product_details.map(
+							(prodDetail) => {
+								return {
+									...prodDetail,
+									uuid: undefined,
+									order_uuid: createdOrder.uuid,
+								};
+							}
+						);
 
-		// 		return {
-		// 			message: "Sucessfully added",
-		// 			order,
-		// 		};
-		// 	},
-		// },
+						await this.models.order_products.bulkCreate(
+							association
+						);
+					});
+				await this.broker.cacher.clean("orders.**");
+
+				return {
+					message: "Sucessfully added",
+					order,
+				};
+			},
+		},
 	},
 
 	/**
