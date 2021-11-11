@@ -45,7 +45,17 @@ module.exports = {
 			role: "user",
 			async handler() {
 				return await this.models.order.findAll({
-					include: this.models.product_details,
+					include: [
+						{
+							model: this.models.product_details,
+							include: [
+								{
+									model: this.models.products,
+									as: "detail_product",
+								},
+							],
+						},
+					],
 				});
 			},
 		},
