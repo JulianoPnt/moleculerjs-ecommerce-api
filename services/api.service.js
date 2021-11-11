@@ -33,6 +33,7 @@ module.exports = {
 					"users.*",
 					"products.*",
 					"orders.*",
+					"cart.*",
 				],
 				http2: true,
 				// HTTPS server with certificate ## MUST BE CONFIGURED IN PRODUCTION

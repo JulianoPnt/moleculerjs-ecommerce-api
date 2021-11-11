@@ -61,6 +61,20 @@ services:
     networks:
       - internal
 
+  cart:
+    build:
+      context: .
+    image: moleculerjs-ecommerce
+    env_file: docker-compose.env
+    environment:
+      SERVICES: cart
+    depends_on:
+      - nats
+      - redis
+      - postgres
+    networks:
+      - internal
+
   auth:
     build:
       context: .
