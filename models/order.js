@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.UUID,
 			allowNull: false,
 		},
+		total: {
+			type: DataTypes.DECIMAL(10, 2),
+			allowNull: false,
+		},
 		status: {
 			type: DataTypes.ENUM,
 			values: ["pending", "processed", "approved", "denied"],

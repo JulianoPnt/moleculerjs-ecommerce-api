@@ -1,6 +1,7 @@
 "use strict";
 
 const Authorize = require("../mixins/authorize.mixin");
+const ProductsCalculation = require("../mixins/calculation.mixin");
 
 /**
  * order service
@@ -8,7 +9,7 @@ const Authorize = require("../mixins/authorize.mixin");
 module.exports = {
 	name: "orders",
 
-	mixins: [Authorize],
+	mixins: [Authorize, ProductsCalculation],
 
 	hooks: {
 		before: {
@@ -81,20 +82,42 @@ module.exports = {
 						},
 					},
 				},
+				payment: {
+					$$type: "object",
+					type: { type: "string" },
+					card_info: {
+						$$type: "object|optional",
+						card_number: "string",
+						user_identity: "string", // CPF
+						validation_number: "string",
+						installments: {
+							type: "number",
+							positive: true,
+							integer: true,
+							min: 1,
+							max: 12,
+						},
+					},
+				},
 			},
 			async handler(ctx) {
+				const productsDetailsIds = ctx.params.product_details.map(
+					(prodDet) => prodDet.product_detail_uuid
+				);
+
+				const total = this.getTotalFromDetails(ctx, productsDetailsIds);
 				const order = await this.models.order
 					.create({
 						address_uuid: ctx.params.address,
 						user_uuid: ctx.meta.user.uuid,
 						status: "pending",
+						total,
 					})
 					.then(async (createdOrder) => {
 						const association = ctx.params.product_details.map(
 							(prodDetail) => {
 								return {
 									...prodDetail,
-									uuid: undefined,
 									order_uuid: createdOrder.uuid,
 								};
 							}
@@ -104,12 +127,19 @@ module.exports = {
 							association
 						);
 					});
-				await this.broker.cacher.clean("orders.**");
 
-				return {
-					message: "Sucessfully added",
-					order,
-				};
+				const payment = await this.broker.call(
+					"payments.makePayment",
+					ctx.params.payment
+				);
+
+				return payment;
+				// await this.broker.cacher.clean("orders.**");
+
+				// return {
+				// 	message: "Sucessfully added",
+				// 	order,
+				// };
 			},
 		},
 	},
