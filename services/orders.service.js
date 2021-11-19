@@ -101,11 +101,12 @@ module.exports = {
 				},
 			},
 			async handler(ctx) {
+				let orderId;
 				const productsDetailsIds = ctx.params.product_details.map(
 					(prodDet) => prodDet.product_detail_uuid
 				);
 
-				const total = this.getTotalFromDetails(ctx, productsDetailsIds);
+				const total = await this.getTotalFromDetails(ctx, productsDetailsIds).then(total => Number(total[0].totalPrice));
 				const order = await this.models.order
 					.create({
 						address_uuid: ctx.params.address,
@@ -114,6 +115,7 @@ module.exports = {
 						total,
 					})
 					.then(async (createdOrder) => {
+						orderId = createdOrder.uuid;
 						const association = ctx.params.product_details.map(
 							(prodDetail) => {
 								return {
@@ -130,16 +132,21 @@ module.exports = {
 
 				const payment = await this.broker.call(
 					"payments.makePayment",
-					ctx.params.payment
+					{ payment: ctx.params.payment, total },
+					{ meta: ctx.meta }
 				);
 
-				return payment;
-				// await this.broker.cacher.clean("orders.**");
+				if (!payment) {
+					// use orderId to do
+					//await update({status: "denied"});
+				}
+				// await update({status: "approved"});
 
-				// return {
-				// 	message: "Sucessfully added",
-				// 	order,
-				// };
+				await this.broker.cacher.clean("orders.**");
+				return {
+					message: "Sucessfully added",
+					order,
+				};
 			},
 		},
 	},

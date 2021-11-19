@@ -2,6 +2,12 @@
 
 const Authorize = require("../mixins/authorize.mixin");
 
+const APPROVED_PAYMENT = {
+	card_number: "123123123123",
+	user_identity: "3912849291",
+	validation_number: 321,
+};
+
 /**
  * order service
  */
@@ -59,9 +65,18 @@ module.exports = {
 						},
 					},
 				},
+				total: {
+					type: "number",
+					positive: true,
+					integer: true,
+				},
 			},
 			async handler(ctx) {
-				return ctx.params;
+				if (ctx.params.payment.type == "card") {
+					return (APPROVED_PAYMENT == ctx.params.payment.card_info);
+				}
+
+				throw new Error("Type not implemented");
 			},
 		},
 	},
