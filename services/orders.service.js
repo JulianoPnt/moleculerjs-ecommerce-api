@@ -154,7 +154,6 @@ module.exports = {
 				await this.broker.cacher.clean("orders.**");
 				return {
 					message: "Sucessfully added",
-					order,
 				};
 			},
 		},
