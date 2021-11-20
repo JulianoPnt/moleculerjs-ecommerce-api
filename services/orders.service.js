@@ -3,6 +3,10 @@
 const Authorize = require("../mixins/authorize.mixin");
 const ProductsCalculation = require("../mixins/calculation.mixin");
 
+const APPROVED_INDEX = 0;
+const PENDING_INDEX = 1;
+const DENIED_INDEX = 2;
+
 /**
  * order service
  */
@@ -135,12 +139,17 @@ module.exports = {
 					{ payment: ctx.params.payment, total },
 					{ meta: ctx.meta }
 				);
-
-				if (!payment) {
-					// use orderId to do
-					//await update({status: "denied"});
+				switch (payment) {
+					case APPROVED_INDEX:
+						await this.models.order.update({status: "approved"}, { where: { uuid: orderId } });
+						break;
+					case PENDING_INDEX:
+						await this.models.order.update({status: "pending"}, { where: { uuid: orderId } });
+						break;
+					case DENIED_INDEX:
+						await this.models.order.update({status: "denied"}, { where: { uuid: orderId } });
+						break;
 				}
-				// await update({status: "approved"});
 
 				await this.broker.cacher.clean("orders.**");
 				return {

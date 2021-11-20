@@ -8,6 +8,22 @@ const APPROVED_PAYMENT = {
 	validation_number: 321,
 };
 
+const PENDING_PAYMENT = {
+	card_number: "2222222222222",
+	user_identity: "3912849291",
+	validation_number: 321,
+};
+
+const DENIED_PAYMENT = {
+	card_number: "3333333333333",
+	user_identity: "3912849291",
+	validation_number: 321,
+};
+
+const APPROVED_INDEX = 0;
+const PENDING_INDEX = 1;
+const DENIED_INDEX = 2;
+
 /**
  * order service
  */
@@ -73,7 +89,14 @@ module.exports = {
 			},
 			async handler(ctx) {
 				if (ctx.params.payment.type == "card") {
-					return (APPROVED_PAYMENT == ctx.params.payment.card_info);
+					switch (ctx.params.payment.card_info.card_number) {
+						case APPROVED_PAYMENT.card_number:
+							return APPROVED_INDEX;
+						case PENDING_PAYMENT.card_number:
+							return PENDING_INDEX;
+						case DENIED_PAYMENT.card_number:
+							return DENIED_INDEX;
+					}
 				}
 
 				throw new Error("Type not implemented");
