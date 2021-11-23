@@ -22,6 +22,7 @@ module.exports = {
 			"*": ["checkIsAuthenticated"],
 			list: ["checkUserRole"],
 			add: ["checkUserRole"],
+			addReview: ["checkUserRole"],
 		},
 	},
 	/**

@@ -14,6 +14,7 @@ module.exports = {
 		before: {
 			"*": ["checkIsAuthenticated"],
 			view: ["checkIsAuthenticated"],
+			addCart: ["checkIsAuthenticated"],
 		},
 	},
 	/**
@@ -46,6 +47,17 @@ module.exports = {
 				return {};
 			},
 		},
+		addCart: {
+			cache: false,
+			rest: {
+				method: "POST",
+				path: "/addCart",
+			},
+			role: "user",
+			async handler(ctx) {
+				return {};
+			},
+		}
 	},
 
 	/**
