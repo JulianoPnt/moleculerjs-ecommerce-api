@@ -7,6 +7,8 @@ const APPROVED_INDEX = 0;
 const PENDING_INDEX = 1;
 const DENIED_INDEX = 2;
 
+const APPROVED_STATUS = "approved";
+
 /**
  * order service
  */
@@ -111,7 +113,7 @@ module.exports = {
 				);
 
 				const total = await this.getTotalFromDetails(ctx, productsDetailsIds).then(total => Number(total[0].totalPrice));
-				const order = await this.models.order
+				await this.models.order
 					.create({
 						address_uuid: ctx.params.address,
 						user_uuid: ctx.meta.user.uuid,
@@ -134,6 +136,11 @@ module.exports = {
 						);
 					});
 
+
+				// for testing purposes
+				// 123123123123 - approved
+				// 3333333333333 - denied
+				// all others - pending
 				const payment = await this.broker.call(
 					"payments.makePayment",
 					{ payment: ctx.params.payment, total },
@@ -151,12 +158,59 @@ module.exports = {
 						break;
 				}
 
+				const order = await this.models.order.findOne({
+					where: {
+						uuid: orderId,
+					},
+				});
+
 				await this.broker.cacher.clean("orders.**");
 				return {
 					message: "Sucessfully added",
+					order
 				};
 			},
 		},
+		addReview: {
+			cache: false,
+			rest: {
+				method: "GET",
+				path: "/addReview",
+			},
+			role: "user",
+			params: {
+				order_uuid: "uuid",
+				comment: "string|optional",
+				rating: {
+					type: "number",
+					positive: true,
+					integer: true,
+					min: 1,
+					max: 5,
+				},
+			},
+			async handler(ctx) {
+				const order = await this.models.order.findOne({
+					where: {
+						uuid: ctx.params.order_uuid,
+					},
+				});
+
+				if (!order) {
+					throw new Error("Not Found");
+				}
+
+				if (order.user_uuid != ctx.meta.user.uuid) {
+					throw new Error("Unauthorized");
+				}
+
+				if (order.status !== APPROVED_STATUS) {
+					throw new Error("Order still in progress");
+				}
+
+				return await this.models.reviews.create(ctx.params);
+			},
+		}
 	},
 
 	/**
