@@ -38,6 +38,11 @@ module.exports = (sequelize, DataTypes) => {
 		ProductDetail.belongsToMany(models.order, {
 			through: models.order_products,
 		});
+		ProductDetail.hasMany(models.cart, {
+			foreignKey: "product_detail_uuid",
+			sourceKey: "uuid",
+			as: "product_detail_cart",
+		});
 	};
 
 	return ProductDetail;
