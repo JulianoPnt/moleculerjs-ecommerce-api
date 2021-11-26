@@ -83,7 +83,6 @@ module.exports = {
 				return await this.models.cart.bulkCreate([...mappedObject]);
 			},
 		},
-		// @TODO All below this
 		editItem: {
 			cache: false,
 			rest: {
@@ -91,8 +90,25 @@ module.exports = {
 				path: "/edit",
 			},
 			role: "user",
+			params: {
+				uuid: "uuid",
+				quantity: {
+					type: "number",
+					positive: true,
+					integer: true,
+				},
+			},
 			async handler(ctx) {
-				return {};
+				if (ctx.params.quantity < 1) {
+					throw new Error("Invalid method use DELETE");
+				}
+
+				return this.models.cart.update(
+					{ quantity: ctx.params.quantity },
+					{
+						where: { uuid: ctx.params.uuid }
+					}
+				);
 			},
 		},
 		removeItem: {
@@ -102,8 +118,22 @@ module.exports = {
 				path: "/remove",
 			},
 			role: "user",
+			params: {
+				uuids: {
+					$$type: "array",
+					items: {
+						type: "object",
+						product_detail_uuid: "uuid",
+						quantity: {
+							type: "number",
+							positive: true,
+							integer: true,
+						},
+					},
+				}
+			},
 			async handler(ctx) {
-				return {};
+				return this.models.cart.destroy({ where: { uuid: ctx.params.uuids }});
 			},
 		},
 		createOrder: {
@@ -113,8 +143,45 @@ module.exports = {
 				path: "/createOrder"
 			},
 			role: "user",
+			params: {
+				address: "uuid",
+				payment: {
+					$$type: "object",
+					type: { type: "string" },
+					card_info: {
+						$$type: "object|optional",
+						card_number: "string",
+						user_identity: "string", // CPF
+						validation_number: "string",
+						installments: {
+							type: "number",
+							positive: true,
+							integer: true,
+							min: 1,
+							max: 12,
+						},
+					},
+				},
+			},
 			async handler(ctx) {
-				return {};
+				const cart = await this.models.cart.findAll({
+					where: {
+						user_uuid: ctx.meta.user.uuid
+					}
+				});
+
+				const productDetails = cart.map(c => {
+					return {
+						product_detail_uuid: c.product_detail_uuid,
+						quantity: c.quantity,
+					};
+				});
+
+				return await this.broker.call(
+					"orders.add",
+					{ ...ctx.params, product_details: productDetails },
+					{ meta: ctx.meta }
+				);
 			}
 		},
 	},
