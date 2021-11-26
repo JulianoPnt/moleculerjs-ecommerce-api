@@ -15,7 +15,12 @@ On the welcome page you can test the generated services via API Gateway and chec
 
 ## Services
 - **api**: API Gateway services
-- **users**: Users Service, REST based
+- **users**: Users management
+- **auth**: Authenticate between all microservices
+- **cart**: Cart info management
+- **orders**: Deal with orders and communicates with payments microservice
+- **products**: Public and private endpoints for product management
+- **payments**: Mocked microservice, would be great to integrate with Stripe or any service like that :D
 
 
 ## Useful links
