@@ -13,6 +13,8 @@ Start the project with `npm run dc:up` command.
 After starting, open the http://localhost:3000/ URL in your browser. 
 On the welcome page you can test the generated services via API Gateway and check the nodes & services.
 
+## Middlewares
+- **Sequelize**: Sequelize middleware is responsible for share models between all microservices, making possible one single database
 ## Services
 - **api**: API Gateway services
 - **users**: Users management
